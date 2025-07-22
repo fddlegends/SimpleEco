@@ -1,14 +1,20 @@
 package de.simpleeco;
 
 import de.simpleeco.commands.EcoCommand;
+import de.simpleeco.commands.SpawnCommand;
 import de.simpleeco.config.ConfigManager;
 import de.simpleeco.currency.BasicCurrency;
 import de.simpleeco.database.DatabaseManager;
 import de.simpleeco.listeners.PlayerJoinListener;
 import de.simpleeco.listeners.VillagerInteractListener;
 import de.simpleeco.pricing.PriceManager;
+import de.simpleeco.scoreboard.ScoreboardManager;
 import de.simpleeco.tasks.PriceRegressionTask;
 import de.simpleeco.trading.CustomVillagerTrader;
+import de.simpleeco.villager.ShopVillagerManager;
+import de.simpleeco.bank.BankManager;
+import de.simpleeco.bank.AtmVillagerManager;
+import de.simpleeco.bank.AtmTrader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -28,8 +34,13 @@ public class SimpleEcoPlugin extends JavaPlugin {
     private ConfigManager configManager;
     private DatabaseManager databaseManager;
     private BasicCurrency currency;
+    private BankManager bankManager;
     private PriceManager priceManager;
     private CustomVillagerTrader villagerTrader;
+    private ShopVillagerManager shopVillagerManager;
+    private AtmVillagerManager atmVillagerManager;
+    private AtmTrader atmTrader;
+    private ScoreboardManager scoreboardManager;
     private PriceRegressionTask regressionTask;
     
     @Override
@@ -56,23 +67,45 @@ public class SimpleEcoPlugin extends JavaPlugin {
             this.currency = new BasicCurrency(this, databaseManager);
             getLogger().info("Währungssystem initialisiert");
             
-            // 4. Preismanager initialisieren
+            // 4. Bank-System initialisieren
+            this.bankManager = new BankManager(this, databaseManager);
+            // BankManager in Currency injizieren für Kompatibilität
+            currency.setBankManager(bankManager);
+            getLogger().info("Bank-System initialisiert");
+            
+            // 5. Preismanager initialisieren
             this.priceManager = new PriceManager(this, databaseManager, configManager);
             getLogger().info("Preismanager initialisiert");
             
-            // 5. Villager-Trading initialisieren
+            // 6. Shop-Villager-Manager initialisieren
+            this.shopVillagerManager = new ShopVillagerManager(this, configManager);
+            getLogger().info("Shop-Villager-Manager initialisiert");
+            
+            // 7. ATM-Villager-Manager initialisieren
+            this.atmVillagerManager = new AtmVillagerManager(this, configManager);
+            getLogger().info("ATM-Villager-Manager initialisiert");
+            
+            // 8. ATM-Trader initialisieren
+            this.atmTrader = new AtmTrader(this, bankManager, configManager);
+            getLogger().info("ATM-Trading-System initialisiert");
+            
+            // 9. Scoreboard-Manager initialisieren
+            this.scoreboardManager = new ScoreboardManager(this, configManager, currency);
+            getLogger().info("Scoreboard-Manager initialisiert");
+            
+            // 10. Villager-Trading initialisieren
             this.villagerTrader = new CustomVillagerTrader(this, currency, priceManager, configManager);
             getLogger().info("Villager-Trading-System initialisiert");
             
-            // 6. Commands registrieren
+            // 11. Commands registrieren
             registerCommands();
             getLogger().info("Commands registriert");
             
-            // 7. Event-Listener registrieren
+            // 12. Event-Listener registrieren
             registerListeners();
             getLogger().info("Event-Listener registriert");
             
-            // 8. Preis-Regression-Task starten
+            // 13. Preis-Regression-Task starten
             this.regressionTask = PriceRegressionTask.start(this);
             getLogger().info("Preis-Regression-Task gestartet");
             
@@ -95,6 +128,12 @@ public class SimpleEcoPlugin extends JavaPlugin {
                 getLogger().info("Preis-Regression-Task gestoppt");
             }
             
+            // Scoreboard-Manager herunterfahren
+            if (scoreboardManager != null) {
+                scoreboardManager.shutdown();
+                getLogger().info("Scoreboard-Manager heruntergefahren");
+            }
+            
             // Datenbank-Verbindungen schließen
             if (databaseManager != null) {
                 databaseManager.shutdown();
@@ -111,9 +150,15 @@ public class SimpleEcoPlugin extends JavaPlugin {
      * Registriert alle Plugin-Commands
      */
     private void registerCommands() {
+        // Eco Command
         EcoCommand ecoCommand = new EcoCommand(this, currency, configManager);
         getCommand("eco").setExecutor(ecoCommand);
         getCommand("eco").setTabCompleter(ecoCommand);
+        
+        // Spawn Command
+        SpawnCommand spawnCommand = new SpawnCommand(this, configManager, shopVillagerManager, atmVillagerManager);
+        getCommand("spawn").setExecutor(spawnCommand);
+        getCommand("spawn").setTabCompleter(spawnCommand);
     }
     
     /**
@@ -121,9 +166,9 @@ public class SimpleEcoPlugin extends JavaPlugin {
      */
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(
-            new PlayerJoinListener(currency, configManager), this);
+            new PlayerJoinListener(currency, configManager, scoreboardManager), this);
         getServer().getPluginManager().registerEvents(
-            new VillagerInteractListener(villagerTrader), this);
+            new VillagerInteractListener(villagerTrader, shopVillagerManager, atmTrader, atmVillagerManager, scoreboardManager), this);
     }
     
     // Getter-Methoden für andere Klassen
@@ -150,5 +195,25 @@ public class SimpleEcoPlugin extends JavaPlugin {
     
     public CustomVillagerTrader getVillagerTrader() {
         return villagerTrader;
+    }
+    
+    public ShopVillagerManager getShopVillagerManager() {
+        return shopVillagerManager;
+    }
+    
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
+    }
+    
+    public BankManager getBankManager() {
+        return bankManager;
+    }
+    
+    public AtmVillagerManager getAtmVillagerManager() {
+        return atmVillagerManager;
+    }
+    
+    public AtmTrader getAtmTrader() {
+        return atmTrader;
     }
 } 

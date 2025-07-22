@@ -3,6 +3,7 @@ package de.simpleeco.commands;
 import de.simpleeco.SimpleEcoPlugin;
 import de.simpleeco.config.ConfigManager;
 import de.simpleeco.currency.BasicCurrency;
+import de.simpleeco.scoreboard.ScoreboardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,11 +28,13 @@ public class EcoCommand implements CommandExecutor, TabCompleter {
     private final SimpleEcoPlugin plugin;
     private final BasicCurrency currency;
     private final ConfigManager configManager;
+    private final ScoreboardManager scoreboardManager;
     
     public EcoCommand(SimpleEcoPlugin plugin, BasicCurrency currency, ConfigManager configManager) {
         this.plugin = plugin;
         this.currency = currency;
         this.configManager = configManager;
+        this.scoreboardManager = plugin.getScoreboardManager();
     }
     
     @Override
@@ -191,6 +194,14 @@ public class EcoCommand implements CommandExecutor, TabCompleter {
                     "currency", configManager.getCurrencyName(),
                     "player", player.getName());
                 targetPlayer.sendMessage(configManager.getMessage("prefix") + receiverMessage);
+                
+                // Scoreboards beider Spieler aktualisieren
+                if (scoreboardManager != null) {
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        scoreboardManager.updatePlayerScoreboard(player);
+                        scoreboardManager.updatePlayerScoreboard(targetPlayer);
+                    }, 2L); // 0.1 Sekunden Verzögerung
+                }
                 
             } else {
                 player.sendMessage(configManager.getMessage("prefix") + 

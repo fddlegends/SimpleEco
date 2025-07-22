@@ -1,36 +1,37 @@
 package de.simpleeco.listeners;
 
-import de.simpleeco.SimpleEcoPlugin;
 import de.simpleeco.config.ConfigManager;
 import de.simpleeco.currency.BasicCurrency;
+import de.simpleeco.scoreboard.ScoreboardManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
- * Event-Listener für Spieler-Beitritt
+ * Event-Listener für Spieler-Join-Events
  * 
- * Erstellt automatisch ein Konto mit Startguthaben für neue Spieler.
+ * Behandelt:
+ * - Initialisierung neuer Spieler-Accounts
+ * - Erstellung von Scoreboards beim Join
+ * - Cleanup beim Quit
  */
 public class PlayerJoinListener implements Listener {
     
     private final BasicCurrency currency;
     private final ConfigManager configManager;
-    private final SimpleEcoPlugin plugin;
+    private final ScoreboardManager scoreboardManager;
     
-    public PlayerJoinListener(BasicCurrency currency, ConfigManager configManager) {
+    public PlayerJoinListener(BasicCurrency currency, ConfigManager configManager, ScoreboardManager scoreboardManager) {
         this.currency = currency;
         this.configManager = configManager;
-        this.plugin = SimpleEcoPlugin.getInstance();
+        this.scoreboardManager = scoreboardManager;
     }
     
     /**
-     * Behandelt das PlayerJoinEvent
-     * 
-     * Überprüft ob der Spieler bereits ein Konto hat und erstellt
-     * bei Bedarf ein neues Konto mit dem konfigurierten Startguthaben.
+     * Behandelt das Beitreten eines Spielers
      * 
      * @param event Das PlayerJoinEvent
      */
@@ -38,38 +39,37 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         
-        // Asynchron prüfen ob Spieler bereits ein Konto hat
-        currency.hasAccount(player).thenAccept(hasAccount -> {
-            if (!hasAccount) {
-                // Neues Konto mit Startguthaben erstellen
-                currency.createAccount(player).thenRun(() -> {
-                    // Willkommensnachricht mit Startguthaben senden
-                    double startBalance = configManager.getStartBalance();
-                    String currencyName = configManager.getCurrencyName();
-                    
-                    String welcomeMessage = String.format(
-                        "§a§lWillkommen! §7Du hast §e%s §7als Startguthaben erhalten!",
-                        currency.formatAmount(startBalance)
-                    );
-                    
-                                         // Nachricht im nächsten Tick senden (nach vollständigem Join)
-                     player.getServer().getScheduler().runTaskLater(
-                         plugin, 
-                         () -> {
-                             if (player.isOnline()) {
-                                 player.sendMessage(configManager.getMessage("prefix") + welcomeMessage);
-                             }
-                         }, 
-                         20L // 1 Sekunde Verzögerung
-                     );
-                });
+        // Spieler-Account initialisieren (falls noch nicht vorhanden)
+        currency.initializeAccount(player).thenAccept(success -> {
+            if (success) {
+                // Scoreboard erstellen (verzögert um sicherzustellen dass der Spieler vollständig geladen ist)
+                org.bukkit.Bukkit.getScheduler().runTaskLater(
+                    scoreboardManager.getPlugin(), 
+                    () -> scoreboardManager.createScoreboard(player), 
+                    10L // 0.5 Sekunden Verzögerung
+                );
             }
         }).exceptionally(throwable -> {
-            player.getServer().getLogger().severe(
-                "Fehler beim Überprüfen/Erstellen des Kontos für " + player.getName() + ": " + 
-                throwable.getMessage()
+            // Fehler beim Account-Setup - trotzdem Scoreboard erstellen
+            org.bukkit.Bukkit.getScheduler().runTaskLater(
+                scoreboardManager.getPlugin(), 
+                () -> scoreboardManager.createScoreboard(player), 
+                10L
             );
             return null;
         });
+    }
+    
+    /**
+     * Behandelt das Verlassen eines Spielers
+     * 
+     * @param event Das PlayerQuitEvent
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        
+        // Scoreboard entfernen beim Quit
+        scoreboardManager.removeScoreboard(player);
     }
 } 
