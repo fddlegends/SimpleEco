@@ -162,13 +162,14 @@ public class CustomVillagerTrader {
                 // Aktionen nur anzeigen wenn verfügbar
                 if (config.isBuyable()) {
                     lore.add("§e§l⚡ Linksklick: §a" + configManager.getBuyButtonName());
+                    lore.add("§e§l⚡ Shift+Linksklick: §a64x Kauf");
                     if (config.isSellable()) {
                         lore.add("§e§l⚡ Rechtsklick: §c" + configManager.getSellButtonName());
+                        lore.add("§e§l⚡ Shift+Rechtsklick: §cAlle verkaufen");
                     }
-                    lore.add("§e§l⚡ Shift+Klick: §664x Handel");
                 } else if (config.isSellable()) {
                     lore.add("§e§l⚡ Rechtsklick: §c" + configManager.getSellButtonName());
-                    lore.add("§e§l⚡ Shift+Rechtsklick: §c64x Verkauf");
+                    lore.add("§e§l⚡ Shift+Rechtsklick: §cAlle verkaufen");
                 }
                 
                 meta.setLore(lore);
@@ -195,8 +196,9 @@ public class CustomVillagerTrader {
             infoLore.add("§7Willkommen beim Wirtschaftshandel!");
             infoLore.add("§7");
             infoLore.add("§a§l» Linksklick: §fItem kaufen");
+            infoLore.add("§a§l» Shift+Linksklick: §f64x kaufen");
             infoLore.add("§c§l» Rechtsklick: §fItem verkaufen");
-            infoLore.add("§e§l» Shift+Klick: §f64x Handel");
+            infoLore.add("§c§l» Shift+Rechtsklick: §fAlle verkaufen");
             infoLore.add("§7");
             infoLore.add("§7Die Preise ändern sich dynamisch");
             infoLore.add("§7basierend auf Angebot und Nachfrage!");
@@ -256,7 +258,18 @@ public class CustomVillagerTrader {
         boolean isSelling = clickType == ClickType.RIGHT || clickType == ClickType.SHIFT_RIGHT;
         boolean isMultiple = clickType == ClickType.SHIFT_LEFT || clickType == ClickType.SHIFT_RIGHT;
         
-        int quantity = isMultiple ? 64 : 1;
+        int quantity;
+        if (isMultiple) {
+            if (isSelling) {
+                // Bei Shift-Rechtsklick: Alle verfügbaren Items verkaufen
+                quantity = countItems(player, material);
+            } else {
+                // Bei Shift-Linksklick: 64 Stück kaufen
+                quantity = 64;
+            }
+        } else {
+            quantity = 1;
+        }
         
         if (isBuying && config.isBuyable()) {
             processBuyTransaction(player, material, quantity);
@@ -332,10 +345,15 @@ public class CustomVillagerTrader {
      * @param quantity Die Anzahl
      */
     private void processSellTransaction(Player player, Material material, int quantity) {
-        // Prüfen ob Spieler genügend Items hat
-        if (!hasItems(player, material, quantity)) {
-            player.sendMessage(configManager.getMessage("prefix") + 
-                             configManager.getMessage("insufficientItems"));
+        // Prüfen ob Spieler genügend Items hat und quantity > 0 ist
+        if (quantity <= 0 || !hasItems(player, material, quantity)) {
+            if (quantity <= 0) {
+                player.sendMessage(configManager.getMessage("prefix") + 
+                                 "§cSie haben keine " + getGermanItemName(material) + " zum Verkaufen!");
+            } else {
+                player.sendMessage(configManager.getMessage("prefix") + 
+                                 configManager.getMessage("insufficientItems"));
+            }
             return;
         }
         
@@ -416,13 +434,24 @@ public class CustomVillagerTrader {
      * @return true wenn genügend Items vorhanden sind
      */
     private boolean hasItems(Player player, Material material, int quantity) {
+        return countItems(player, material) >= quantity;
+    }
+    
+    /**
+     * Zählt die Anzahl an Items eines bestimmten Materials im Spieler-Inventar
+     * 
+     * @param player Der Spieler
+     * @param material Das Material
+     * @return Die Anzahl der Items
+     */
+    private int countItems(Player player, Material material) {
         int count = 0;
         for (ItemStack item : player.getInventory().getStorageContents()) {
             if (item != null && item.getType() == material) {
                 count += item.getAmount();
             }
         }
-        return count >= quantity;
+        return count;
     }
     
     /**

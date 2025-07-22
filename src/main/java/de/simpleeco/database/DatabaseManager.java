@@ -28,6 +28,7 @@ public class DatabaseManager {
     
     // Cache für häufig abgerufene Daten
     private final ConcurrentHashMap<UUID, Double> balanceCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Double> bankBalanceCache = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, ItemStats> itemStatsCache = new ConcurrentHashMap<>();
     
     public DatabaseManager(SimpleEcoPlugin plugin) {
@@ -81,11 +82,20 @@ public class DatabaseManager {
      */
     private void createTables() throws SQLException {
         try (Statement stmt = connection.createStatement()) {
-            // Spieler-Balance-Tabelle
+            // Spieler-Balance-Tabelle (für Bargeld)
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS player_balance (
                     uuid TEXT PRIMARY KEY,
                     balance REAL NOT NULL DEFAULT 0.0,
+                    last_updated INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+                )
+            """);
+            
+            // Bank-Balance-Tabelle
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS player_bank_balance (
+                    uuid TEXT PRIMARY KEY,
+                    bank_balance REAL NOT NULL DEFAULT 0.0,
                     last_updated INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
                 )
             """);
@@ -103,6 +113,7 @@ public class DatabaseManager {
             
             // Indices für bessere Performance
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_balance_updated ON player_balance(last_updated)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_bank_balance_updated ON player_bank_balance(last_updated)");
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_stats_updated ON item_stats(last_updated)");
         }
     }
@@ -125,6 +136,20 @@ public class DatabaseManager {
             plugin.getLogger().log(Level.WARNING, "Fehler beim Laden des Balance-Cache:", e);
         }
         
+        // Bank-Balance-Cache laden
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT uuid, bank_balance FROM player_bank_balance")) {
+            
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                double bankBalance = rs.getDouble("bank_balance");
+                bankBalanceCache.put(uuid, bankBalance);
+            }
+            
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.WARNING, "Fehler beim Laden des Bank-Balance-Cache:", e);
+        }
+        
         // Item-Stats-Cache laden
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT item, sold, bought, last_trade_time FROM item_stats")) {
@@ -141,7 +166,8 @@ public class DatabaseManager {
             plugin.getLogger().log(Level.WARNING, "Fehler beim Laden des Item-Stats-Cache:", e);
         }
         
-        plugin.getLogger().info("Cache geladen: " + balanceCache.size() + " Spieler, " + 
+        plugin.getLogger().info("Cache geladen: " + balanceCache.size() + " Spieler (Cash), " + 
+                               bankBalanceCache.size() + " Spieler (Bank), " + 
                                itemStatsCache.size() + " Items");
     }
     
@@ -301,6 +327,71 @@ public class DatabaseManager {
         }
     }
     
+    /**
+     * Holt das Bank-Guthaben eines Spielers (asynchron)
+     */
+    public CompletableFuture<Double> getBankBalance(UUID playerId) {
+        // Zuerst im Cache suchen
+        Double cachedBalance = bankBalanceCache.get(playerId);
+        if (cachedBalance != null) {
+            return CompletableFuture.completedFuture(cachedBalance);
+        }
+        
+        // Wenn nicht im Cache, aus Datenbank laden
+        return CompletableFuture.supplyAsync(() -> {
+            try (PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT bank_balance FROM player_bank_balance WHERE uuid = ?")) {
+                
+                stmt.setString(1, playerId.toString());
+                ResultSet rs = stmt.executeQuery();
+                
+                if (rs.next()) {
+                    double bankBalance = rs.getDouble("bank_balance");
+                    bankBalanceCache.put(playerId, bankBalance);
+                    return bankBalance;
+                } else {
+                    // Spieler Bank-Konto existiert nicht, mit 0.0 starten
+                    setBankBalance(playerId, 0.0);
+                    return 0.0;
+                }
+                
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Fehler beim Laden des Bank-Guthabens:", e);
+                return 0.0;
+            }
+        });
+    }
+    
+    /**
+     * Setzt das Bank-Guthaben eines Spielers (asynchron)
+     */
+    public CompletableFuture<Void> setBankBalance(UUID playerId, double balance) {
+        bankBalanceCache.put(playerId, balance);
+        
+        return CompletableFuture.runAsync(() -> {
+            try (PreparedStatement stmt = connection.prepareStatement(
+                    "INSERT OR REPLACE INTO player_bank_balance (uuid, bank_balance, last_updated) VALUES (?, ?, strftime('%s', 'now'))")) {
+                
+                stmt.setString(1, playerId.toString());
+                stmt.setDouble(2, balance);
+                stmt.executeUpdate();
+                
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Fehler beim Speichern des Bank-Guthabens:", e);
+            }
+        });
+    }
+    
+    /**
+     * Addiert einen Betrag zum Bank-Guthaben (asynchron)
+     */
+    public CompletableFuture<Double> addBankBalance(UUID playerId, double amount) {
+        return getBankBalance(playerId).thenCompose(currentBalance -> {
+            double newBalance = currentBalance + amount;
+            return setBankBalance(playerId, newBalance).thenApply(v -> newBalance);
+        });
+    }
+
     /**
      * Prüft ob ein Spieler existiert
      */

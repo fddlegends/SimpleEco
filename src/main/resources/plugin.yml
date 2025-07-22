@@ -11,6 +11,10 @@ commands:
     description: Hauptkommando für das Wirtschaftssystem
     usage: /eco <balance|pay> [args...]
     permission: simpleeco.use
+  spawn:
+    description: Spawnt spezielle Entities für das Plugin
+    usage: /spawn <villager>
+    permission: simpleeco.spawn
 
 permissions:
   simpleeco.use:
@@ -21,4 +25,10 @@ permissions:
     default: op
   simpleeco.balance.other:
     description: Erlaubt das Einsehen fremder Kontostände
-    default: op 
+    default: op
+  simpleeco.spawn:
+    description: Erlaubt das Spawnen von Shop-Entities
+    default: op
+  simpleeco.spawn.villager:
+    description: Erlaubt das Spawnen von Shop-Villagern
+    default: op

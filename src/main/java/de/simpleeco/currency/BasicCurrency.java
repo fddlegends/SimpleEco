@@ -2,6 +2,7 @@ package de.simpleeco.currency;
 
 import de.simpleeco.SimpleEcoPlugin;
 import de.simpleeco.database.DatabaseManager;
+import de.simpleeco.bank.BankManager;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -12,11 +13,15 @@ import java.util.concurrent.CompletableFuture;
  * 
  * Bietet eine einfache API für alle Währungsoperationen und
  * delegiert die Datenpersistierung an den DatabaseManager.
+ * 
+ * Seit der Bank-Erweiterung wird standardmäßig Bargeld (Cash) verwendet
+ * für Kompatibilität mit bestehenden Systemen.
  */
 public class BasicCurrency {
     
     private final SimpleEcoPlugin plugin;
     private final DatabaseManager databaseManager;
+    private BankManager bankManager; // Wird später injiziert
     
     public BasicCurrency(SimpleEcoPlugin plugin, DatabaseManager databaseManager) {
         this.plugin = plugin;
@@ -24,30 +29,43 @@ public class BasicCurrency {
     }
     
     /**
-     * Holt den Kontostand eines Spielers
+     * Injiziert den BankManager (wird nach der Initialisierung aufgerufen)
+     * 
+     * @param bankManager Der BankManager
+     */
+    public void setBankManager(BankManager bankManager) {
+        this.bankManager = bankManager;
+    }
+    
+    /**
+     * Holt den Kontostand eines Spielers (Bargeld für Trading-Kompatibilität)
      * 
      * @param playerId UUID des Spielers
-     * @return CompletableFuture mit dem Kontostand
+     * @return CompletableFuture mit dem Bargeld-Kontostand
      */
     public CompletableFuture<Double> getBalance(UUID playerId) {
+        // Verwende Bargeld (Cash) als Standard für Trading-Kompatibilität
+        if (bankManager != null) {
+            return bankManager.getCashBalance(playerId);
+        }
         return databaseManager.getBalance(playerId);
     }
     
     /**
-     * Holt den Kontostand eines Spielers (synchrone Convenience-Methode)
+     * Holt den Kontostand eines Spielers (Convenience-Methode)
      * 
      * @param player Spieler-Objekt
-     * @return CompletableFuture mit dem Kontostand
+     * @return CompletableFuture mit dem Bargeld-Kontostand
      */
     public CompletableFuture<Double> getBalance(Player player) {
         return getBalance(player.getUniqueId());
     }
     
     /**
-     * Setzt den Kontostand eines Spielers
+     * Setzt den Kontostand eines Spielers (Bargeld)
      * 
      * @param playerId UUID des Spielers
-     * @param balance Neuer Kontostand
+     * @param balance Neuer Bargeld-Kontostand
      * @return CompletableFuture das abgeschlossen wird wenn die Operation fertig ist
      */
     public CompletableFuture<Void> setBalance(UUID playerId, double balance) {
@@ -55,6 +73,10 @@ public class BasicCurrency {
             throw new IllegalArgumentException("Kontostand kann nicht negativ sein");
         }
         
+        // Verwende Bargeld (Cash) als Standard für Trading-Kompatibilität
+        if (bankManager != null) {
+            return bankManager.setCashBalance(playerId, balance);
+        }
         return databaseManager.setBalance(playerId, balance);
     }
     
@@ -70,13 +92,17 @@ public class BasicCurrency {
     }
     
     /**
-     * Addiert einen Betrag zum Kontostand
+     * Addiert einen Betrag zum Kontostand (Bargeld)
      * 
      * @param playerId UUID des Spielers
      * @param amount Betrag zum Addieren (kann negativ sein für Abzug)
-     * @return CompletableFuture mit dem neuen Kontostand
+     * @return CompletableFuture mit dem neuen Bargeld-Kontostand
      */
     public CompletableFuture<Double> addBalance(UUID playerId, double amount) {
+        // Verwende Bargeld (Cash) als Standard für Trading-Kompatibilität
+        if (bankManager != null) {
+            return bankManager.addCashBalance(playerId, amount);
+        }
         return databaseManager.addBalance(playerId, amount);
     }
     
@@ -118,11 +144,11 @@ public class BasicCurrency {
     }
     
     /**
-     * Prüft ob ein Spieler genügend Guthaben hat
+     * Prüft ob ein Spieler genügend Guthaben hat (Bargeld)
      * 
      * @param playerId UUID des Spielers
      * @param amount Erforderlicher Betrag
-     * @return CompletableFuture<Boolean> ob genügend Guthaben vorhanden ist
+     * @return CompletableFuture<Boolean> ob genügend Bargeld vorhanden ist
      */
     public CompletableFuture<Boolean> hasBalance(UUID playerId, double amount) {
         return getBalance(playerId).thenApply(balance -> balance >= amount);
@@ -225,6 +251,42 @@ public class BasicCurrency {
      */
     public CompletableFuture<Boolean> hasAccount(Player player) {
         return hasAccount(player.getUniqueId());
+    }
+    
+    /**
+     * Initialisiert ein Konto für einen Spieler falls noch nicht vorhanden
+     * 
+     * @param player Spieler-Objekt
+     * @return CompletableFuture<Boolean> true wenn neues Konto erstellt wurde, false wenn bereits vorhanden
+     */
+    public CompletableFuture<Boolean> initializeAccount(Player player) {
+        return hasAccount(player).thenCompose(hasAccount -> {
+            if (!hasAccount) {
+                return createAccount(player).thenApply(v -> {
+                    // Willkommensnachricht senden
+                    double startBalance = plugin.getConfigManager().getStartBalance();
+                    String welcomeMessage = String.format(
+                        "§a§lWillkommen! §7Du hast §e%s §7als Startguthaben erhalten!",
+                        formatAmount(startBalance)
+                    );
+                    
+                    // Nachricht verzögert senden
+                    plugin.getServer().getScheduler().runTaskLater(
+                        plugin, 
+                        () -> {
+                            if (player.isOnline()) {
+                                player.sendMessage(plugin.getConfigManager().getMessage("prefix") + welcomeMessage);
+                            }
+                        }, 
+                        20L // 1 Sekunde Verzögerung
+                    );
+                    
+                    return true; // Neues Konto erstellt
+                });
+            } else {
+                return CompletableFuture.completedFuture(false); // Konto bereits vorhanden
+            }
+        });
     }
     
     /**

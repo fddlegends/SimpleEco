@@ -197,6 +197,10 @@ public class ConfigManager {
         return itemPrices.get(material);
     }
     
+    public FileConfiguration getConfig() {
+        return config;
+    }
+    
     public String getMenuTitle() {
         return config.getString("trading.menuTitle", "§6§lWirtschaftshandel");
     }
