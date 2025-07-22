@@ -1,0 +1,24 @@
+name: SimpleEco
+version: 1.0.0
+main: de.simpleeco.SimpleEcoPlugin
+api-version: 1.20
+description: Dynamisches Wirtschaftssystem Plugin mit Villager-Trading
+author: SimpleEco Team
+website: https://github.com/simpleeco
+
+commands:
+  eco:
+    description: Hauptkommando für das Wirtschaftssystem
+    usage: /eco <balance|pay> [args...]
+    permission: simpleeco.use
+
+permissions:
+  simpleeco.use:
+    description: Erlaubt die Nutzung der Eco-Commands
+    default: true
+  simpleeco.admin:
+    description: Erlaubt Admin-Funktionen
+    default: op
+  simpleeco.balance.other:
+    description: Erlaubt das Einsehen fremder Kontostände
+    default: op 

@@ -1,0 +1,128 @@
+# SimpleEco Plugin Konfiguration
+
+# Währungseinstellungen
+currency:
+  name: "Gold"  # Name der Währung
+  startBalance: 1000.0  # Startguthaben für neue Spieler
+  symbol: "G"  # Symbol der Währung
+
+# Datenbankeinstellungen
+database:
+  path: "plugins/SimpleEco/economy.db"  # Pfad zur SQLite-Datenbankdatei
+
+# Preiseinstellungen
+pricing:
+  priceFactor: 0.05  # Elastizitätsfaktor (5% = 0.05)
+  referenceAmount: 1000  # Referenzmenge für Preisberechnung
+  regressionTimeMinutes: 60  # Zeit in Minuten bis Preise sich zum Default zurückbewegen
+  regressionUpdateInterval: 5  # Intervall in Minuten für Preis-Updates
+  
+  # Standard-Items mit Preiseinstellungen
+  items:
+    WHEAT:
+      basePrice: 10.0
+      minPrice: 5.0
+      maxPrice: 50.0
+      buyable: true
+      sellable: true
+    CARROT:
+      basePrice: 8.0
+      minPrice: 4.0
+      maxPrice: 40.0
+      buyable: true
+      sellable: true
+    POTATO:
+      basePrice: 8.0
+      minPrice: 4.0
+      maxPrice: 40.0
+      buyable: true
+      sellable: true
+    BEETROOT:
+      basePrice: 12.0
+      minPrice: 6.0
+      maxPrice: 60.0
+      buyable: true
+      sellable: true
+    APPLE:
+      basePrice: 15.0
+      minPrice: 8.0
+      maxPrice: 75.0
+      buyable: true
+      sellable: true
+    BREAD:
+      basePrice: 25.0
+      minPrice: 12.0
+      maxPrice: 125.0
+      buyable: true
+      sellable: false  # Nur kaufbar, nicht verkaufbar
+    COOKED_BEEF:
+      basePrice: 20.0
+      minPrice: 10.0
+      maxPrice: 100.0
+      buyable: true
+      sellable: true
+    COOKED_PORKCHOP:
+      basePrice: 18.0
+      minPrice: 9.0
+      maxPrice: 90.0
+      buyable: true
+      sellable: true
+    COOKED_CHICKEN:
+      basePrice: 16.0
+      minPrice: 8.0
+      maxPrice: 80.0
+      buyable: true
+      sellable: true
+    DIAMOND:
+      basePrice: 500.0
+      minPrice: 250.0
+      maxPrice: 2500.0
+      buyable: true
+      sellable: false  # Nur kaufbar (zu wertvoll für Verkauf)
+    IRON_INGOT:
+      basePrice: 50.0
+      minPrice: 25.0
+      maxPrice: 250.0
+      buyable: true
+      sellable: true
+    GOLD_INGOT:
+      basePrice: 100.0
+      minPrice: 50.0
+      maxPrice: 500.0
+      buyable: true
+      sellable: true
+    EMERALD:
+      basePrice: 200.0
+      minPrice: 100.0
+      maxPrice: 1000.0
+      buyable: true
+      sellable: false  # Nur kaufbar
+    COAL:
+      basePrice: 5.0
+      minPrice: 2.0
+      maxPrice: 25.0
+      buyable: false  # Nur verkaufbar (Rohstoff)
+      sellable: true
+
+# Villager-Handelseinstellungen
+trading:
+  menuTitle: "§6§lWirtschaftshandel"
+  buyButtonName: "§a§lKaufen"
+  sellButtonName: "§c§lVerkaufen"
+  infoButtonName: "§e§lInformation"
+  
+# Nachrichten
+messages:
+  prefix: "§8[§6SimpleEco§8] §7"
+  noPermission: "§cDu hast keine Berechtigung für diesen Befehl!"
+  playerNotFound: "§cSpieler nicht gefunden!"
+  invalidAmount: "§cUngültiger Betrag!"
+  insufficientFunds: "§cNicht genügend Guthaben!"
+  paymentSent: "§aDu hast §e{amount} {currency} §aan §e{player} §aüberwiesen!"
+  paymentReceived: "§aDu hast §e{amount} {currency} §avon §e{player} §aerhalten!"
+  balanceYour: "§aDein Kontostand: §e{balance} {currency}"
+  balanceOther: "§aKontostand von §e{player}§a: §e{balance} {currency}"
+  tradeSuccess: "§aHandel erfolgreich abgeschlossen!"
+  tradeFailed: "§cHandel fehlgeschlagen!"
+  insufficientItems: "§cNicht genügend Items im Inventar!"
+  inventoryFull: "§cDein Inventar ist voll!" 
