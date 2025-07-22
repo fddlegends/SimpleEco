@@ -12,6 +12,7 @@ Ein vollständiges Paper Spigot Plugin für Minecraft, das ein dynamisches Wirts
 ### Dynamische Preisbildung
 - **Intelligente Preisformel**: `Preis = clamp(basisPreis * (1 + preisFaktor * nettoVerkäufe * regressionFaktor / referenzMenge), minPreis, maxPreis)`
 - **Preis-Regression**: Preise kehren über konfigurierbare Zeit zum Basispreis zurück
+- **Item-spezifische Parameter**: Jedes Item kann eigene `priceFactor` und `referenceAmount` haben
 - **Echzeit-Updates**: Preise ändern sich sofort basierend auf Handelstätigkeiten
 - **Item-Kontrolle**: Konfigurierbare Kaufbarkeit/Verkaufbarkeit pro Item
 - **Vollständig konfigurierbar**: Alle Preisparameter in der `config.yml` anpassbar
@@ -51,13 +52,17 @@ database:
 
 # Preiseinstellungen
 pricing:
-  priceFactor: 0.05  # 5% Elastizität
-  referenceAmount: 1000
+  priceFactor: 0.05  # 5% Elastizität (global, überschreibbar pro Item)
+  referenceAmount: 1000  # Referenzmenge (global, überschreibbar pro Item)
+  regressionTimeMinutes: 60  # Zeit bis Preise zum Default zurückkehren
+  regressionUpdateInterval: 5  # Update-Intervall in Minuten
 ```
 
 ### Item-Preise konfigurieren
 ```yaml
 pricing:
+  priceFactor: 0.05  # Globaler Standard-Preisfaktor
+  referenceAmount: 1000  # Globale Standard-Referenzmenge
   regressionTimeMinutes: 60  # Zeit bis Preise zum Basispreis zurückkehren
   regressionUpdateInterval: 5  # Update-Intervall in Minuten
   
@@ -68,18 +73,25 @@ pricing:
       maxPrice: 50.0
       buyable: true   # Kann gekauft werden
       sellable: true  # Kann verkauft werden
+      # Verwendet globale priceFactor und referenceAmount
+      
     DIAMOND:
       basePrice: 500.0
       minPrice: 250.0
       maxPrice: 2500.0
       buyable: true
       sellable: false  # Nur kaufbar, nicht verkaufbar
+      priceFactor: 0.02        # Item-spezifisch: Weniger volatil
+      referenceAmount: 100     # Item-spezifisch: Reagiert schneller
+      
     COAL:
       basePrice: 5.0
       minPrice: 2.0
       maxPrice: 25.0
       buyable: false   # Nur verkaufbar (Rohstoff)
       sellable: true
+      priceFactor: 0.1         # Item-spezifisch: Sehr volatil
+      referenceAmount: 2000    # Item-spezifisch: Massengut
 ```
 
 ## 🎮 Commands
@@ -112,7 +124,8 @@ Das Interface zeigt für jedes Item:
 - Aktueller Kauf-/Verkaufspreis
 - Preistoleranz-Trends (steigend/fallend/stabil)
 - Volatilität (niedrig/mittel/hoch)
-- Handelsstatistiken
+- Handelsstatistiken (verkauft/gekauft/netto)
+- Effektive Preisparameter (Faktor und Referenzmenge)
 
 ## 📊 Dynamische Preisbildung
 
@@ -138,6 +151,22 @@ RegressionFaktor = 1.0 - (zeitSeitLetztemHandel / regressionZeit)
 - **Regressions-Faktor**: 0.5 (1.0 - 30/60)
 
 **Berechneter Preis**: `10 * (1 + 0.05 * 1000 * 0.5 / 1000) = 10 * 1.025 = 10.25 Gold`
+
+### Beispiel: Item-spezifische Parameter
+
+**Diamant** (wenig volatil, reagiert schnell):
+- **Basispreis**: 500 Gold
+- **Item-spezifischer Preis-Faktor**: 0.02 (vs. global 0.05)
+- **Item-spezifische Referenzmenge**: 100 (vs. global 1000)
+- **Verkauft**: 50, **Gekauft**: 30, **Netto**: +20
+- **Berechneter Preis**: `500 * (1 + 0.02 * 20 * 1.0 / 100) = 500 * 1.004 = 502 Gold`
+
+**Kohle** (sehr volatil, Massengut):
+- **Basispreis**: 5 Gold
+- **Item-spezifischer Preis-Faktor**: 0.1 (vs. global 0.05)
+- **Item-spezifische Referenzmenge**: 2000 (vs. global 1000)
+- **Verkauft**: 3000, **Gekauft**: 1000, **Netto**: +2000
+- **Berechneter Preis**: `5 * (1 + 0.1 * 2000 * 1.0 / 2000) = 5 * 1.1 = 5.5 Gold`
 
 ## 🔧 Technische Details
 
@@ -213,12 +242,18 @@ CREATE TABLE item_stats (
 - SQLite-Persistierung
 - Umfassende Konfigurationsmöglichkeiten
 
-### Version 1.1.0 (Aktuelle Version)
+### Version 1.1.0
 - **Preis-Regression**: Preise kehren über Zeit zum Basispreis zurück
 - **Item-Kontrolle**: Konfigurierbare Kaufbarkeit/Verkaufbarkeit pro Item
 - **Automatische Updates**: Scheduler-Task für regelmäßige Preisanpassungen
 - **Verbesserte Performance**: Optimierte Datenbankzugriffe mit Zeitstempel-Tracking
 - **Enhanced UI**: Bessere Anzeige von handelbaren Optionen im Villager-Menü
+
+### Version 1.2.0 (Aktuelle Version)
+- **Item-spezifische Parameter**: Jedes Item kann eigene `priceFactor` und `referenceAmount` haben
+- **Granulare Kontrolle**: Verschiedene Volatilitäten und Reaktionsgeschwindigkeiten pro Item
+- **Erweiterte Anzeige**: UI zeigt effektive Preisparameter für jedes Item
+- **Flexible Konfiguration**: Globale Standards mit optionalen item-spezifischen Überschreibungen
 
 ## 👥 Support
 

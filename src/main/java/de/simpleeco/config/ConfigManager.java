@@ -93,7 +93,21 @@ public class ConfigManager {
                 boolean buyable = config.getBoolean(basePath + ".buyable", true);
                 boolean sellable = config.getBoolean(basePath + ".sellable", true);
                 
-                ItemPriceConfig priceConfig = new ItemPriceConfig(basePrice, minPrice, maxPrice, buyable, sellable);
+                // Item-spezifische Parameter (optional, falls nicht gesetzt werden globale Werte verwendet)
+                Double itemPriceFactor = null;
+                Long itemReferenceAmount = null;
+                
+                if (config.isSet(basePath + ".priceFactor")) {
+                    itemPriceFactor = config.getDouble(basePath + ".priceFactor");
+                }
+                if (config.isSet(basePath + ".referenceAmount")) {
+                    itemReferenceAmount = config.getLong(basePath + ".referenceAmount");
+                }
+                
+                ItemPriceConfig priceConfig = new ItemPriceConfig(
+                    basePrice, minPrice, maxPrice, buyable, sellable, 
+                    itemPriceFactor, itemReferenceAmount
+                );
                 itemPrices.put(material, priceConfig);
                 
             } catch (IllegalArgumentException e) {
@@ -208,13 +222,19 @@ public class ConfigManager {
         private final double maxPrice;
         private final boolean buyable;
         private final boolean sellable;
+        private final Double priceFactor;        // Null = globaler Wert verwenden
+        private final Long referenceAmount;      // Null = globaler Wert verwenden
         
-        public ItemPriceConfig(double basePrice, double minPrice, double maxPrice, boolean buyable, boolean sellable) {
+        public ItemPriceConfig(double basePrice, double minPrice, double maxPrice, 
+                              boolean buyable, boolean sellable, 
+                              Double priceFactor, Long referenceAmount) {
             this.basePrice = basePrice;
             this.minPrice = minPrice;
             this.maxPrice = maxPrice;
             this.buyable = buyable;
             this.sellable = sellable;
+            this.priceFactor = priceFactor;
+            this.referenceAmount = referenceAmount;
         }
         
         public double getBasePrice() {
@@ -235,6 +255,34 @@ public class ConfigManager {
         
         public boolean isSellable() {
             return sellable;
+        }
+        
+        /**
+         * Gibt den item-spezifischen Preisfaktor zurück, oder null wenn globaler Wert verwendet werden soll
+         */
+        public Double getPriceFactor() {
+            return priceFactor;
+        }
+        
+        /**
+         * Gibt die item-spezifische Referenzmenge zurück, oder null wenn globaler Wert verwendet werden soll
+         */
+        public Long getReferenceAmount() {
+            return referenceAmount;
+        }
+        
+        /**
+         * Gibt den effektiven Preisfaktor zurück (item-spezifisch oder global)
+         */
+        public double getEffectivePriceFactor(double globalPriceFactor) {
+            return priceFactor != null ? priceFactor : globalPriceFactor;
+        }
+        
+        /**
+         * Gibt die effektive Referenzmenge zurück (item-spezifisch oder global)
+         */
+        public long getEffectiveReferenceAmount(long globalReferenceAmount) {
+            return referenceAmount != null ? referenceAmount : globalReferenceAmount;
         }
     }
 } 

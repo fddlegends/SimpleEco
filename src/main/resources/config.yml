@@ -12,12 +12,24 @@ database:
 
 # Preiseinstellungen
 pricing:
-  priceFactor: 0.05  # Elastizitätsfaktor (5% = 0.05)
-  referenceAmount: 1000  # Referenzmenge für Preisberechnung
+  priceFactor: 0.05  # Elastizitätsfaktor (5% = 0.05) - Globaler Standard
+  referenceAmount: 1000  # Referenzmenge für Preisberechnung - Globaler Standard
   regressionTimeMinutes: 60  # Zeit in Minuten bis Preise sich zum Default zurückbewegen
   regressionUpdateInterval: 5  # Intervall in Minuten für Preis-Updates
   
   # Standard-Items mit Preiseinstellungen
+  # 
+  # Jedes Item kann folgende Parameter haben:
+  # - basePrice: Basispreis des Items
+  # - minPrice: Minimaler Preis (Untergrenze)
+  # - maxPrice: Maximaler Preis (Obergrenze)
+  # - buyable: true/false - Kann das Item gekauft werden?
+  # - sellable: true/false - Kann das Item verkauft werden?
+  # - priceFactor: Optional - Überschreibt globalen priceFactor (Volatilität)
+  # - referenceAmount: Optional - Überschreibt globale referenceAmount (Reaktionsgeschwindigkeit)
+  #
+  # Höherer priceFactor = volatiler (stärkere Preisschwankungen)
+  # Niedrigere referenceAmount = reaktionsschneller (weniger Handel nötig für Preisänderung)
   items:
     WHEAT:
       basePrice: 10.0
@@ -25,6 +37,8 @@ pricing:
       maxPrice: 50.0
       buyable: true
       sellable: true
+      # referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+      # priceFactor: 0.05      # Optional: Überschreibt globalen Wert
     CARROT:
       basePrice: 8.0
       minPrice: 4.0
@@ -79,30 +93,38 @@ pricing:
       maxPrice: 2500.0
       buyable: true
       sellable: false  # Nur kaufbar (zu wertvoll für Verkauf)
+      priceFactor: 0.02        # Niedriger Faktor - weniger volatil
+      referenceAmount: 100     # Kleine Referenzmenge - reagiert schneller
     IRON_INGOT:
       basePrice: 50.0
       minPrice: 25.0
       maxPrice: 250.0
       buyable: true
       sellable: true
+      priceFactor: 0.08        # Höherer Faktor - volatiler
     GOLD_INGOT:
       basePrice: 100.0
       minPrice: 50.0
       maxPrice: 500.0
       buyable: true
       sellable: true
+      priceFactor: 0.06        # Mittel-volatil
     EMERALD:
       basePrice: 200.0
       minPrice: 100.0
       maxPrice: 1000.0
       buyable: true
       sellable: false  # Nur kaufbar
+      priceFactor: 0.03        # Sehr stabil
+      referenceAmount: 50      # Kleine Menge - exklusiv
     COAL:
       basePrice: 5.0
       minPrice: 2.0
       maxPrice: 25.0
       buyable: false  # Nur verkaufbar (Rohstoff)
       sellable: true
+      priceFactor: 0.1         # Sehr volatil
+      referenceAmount: 2000    # Große Menge - Massengut
 
 # Villager-Handelseinstellungen
 trading:

@@ -155,6 +155,9 @@ public class CustomVillagerTrader {
                 lore.add("§8▪ Gekauft: §7" + priceInfo.totalBought());
                 lore.add("§8▪ Netto: §7" + priceInfo.getNetSales());
                 lore.add("§7");
+                lore.add("§8▪ Preis-Faktor: §7" + String.format("%.3f", priceInfo.effectivePriceFactor()));
+                lore.add("§8▪ Referenz-Menge: §7" + priceInfo.effectiveReferenceAmount());
+                lore.add("§7");
                 
                 // Aktionen nur anzeigen wenn verfügbar
                 if (config.isBuyable()) {

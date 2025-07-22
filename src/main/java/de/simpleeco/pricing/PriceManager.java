@@ -82,8 +82,9 @@ public class PriceManager {
         double minPrice = priceConfig.getMinPrice();
         double maxPrice = priceConfig.getMaxPrice();
         
-        double priceFactor = configManager.getPriceFactor();
-        long referenceAmount = configManager.getReferenceAmount();
+        // Item-spezifische oder globale Parameter verwenden
+        double priceFactor = priceConfig.getEffectivePriceFactor(configManager.getPriceFactor());
+        long referenceAmount = priceConfig.getEffectiveReferenceAmount(configManager.getReferenceAmount());
         long regressionTimeMinutes = configManager.getRegressionTimeMinutes();
         
         // Netto-Verkäufe berechnen (verkauft - gekauft)
@@ -200,17 +201,19 @@ public class PriceManager {
                     DatabaseManager.ItemStats stats = statsFuture.get();
                     double volatility = volatilityFuture.get();
                     
-                    return new PriceInfo(
-                        material,
-                        buyPrice,
-                        sellPrice,
-                        priceConfig.getBasePrice(),
-                        priceConfig.getMinPrice(),
-                        priceConfig.getMaxPrice(),
-                        stats.sold(),
-                        stats.bought(),
-                        volatility
-                    );
+                                         return new PriceInfo(
+                         material,
+                         buyPrice,
+                         sellPrice,
+                         priceConfig.getBasePrice(),
+                         priceConfig.getMinPrice(),
+                         priceConfig.getMaxPrice(),
+                         stats.sold(),
+                         stats.bought(),
+                         volatility,
+                         priceConfig.getEffectivePriceFactor(configManager.getPriceFactor()),
+                         priceConfig.getEffectiveReferenceAmount(configManager.getReferenceAmount())
+                     );
                 } catch (Exception e) {
                     plugin.getLogger().log(Level.SEVERE, "Fehler beim Erstellen der Preisübersicht", e);
                     return null;
@@ -263,7 +266,9 @@ public class PriceManager {
         double maxPrice,
         long totalSold,
         long totalBought,
-        double volatility
+        double volatility,
+        double effectivePriceFactor,
+        long effectiveReferenceAmount
     ) {
         
         public long getNetSales() {
