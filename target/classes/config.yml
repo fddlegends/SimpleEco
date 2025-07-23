@@ -1191,7 +1191,61 @@ items:
     maxPrice: 35.0
     buyable: true
     sellable: true
-
+  #########SpawnEggs
+  ALLAY_SPAWN_EGG:
+    basePrice: 1200.0
+    minPrice: 950.0
+    maxPrice: 1500.0
+    buyable: true
+    sellable: true
+  ARMADILLO_SPAWN_EGG:
+    basePrice: 1100.0
+    minPrice: 900.0
+    maxPrice: 1400.0
+    buyable: true
+    sellable: true
+  ENDERMITE_SPAWN_EGG:
+    basePrice: 850.0
+    minPrice: 700.0
+    maxPrice: 1000.0
+    buyable: true
+    sellable: true
+  FROG_SPAWN_EGG:
+    basePrice: 200.0
+    minPrice: 100.0
+    maxPrice: 450.0
+    buyable: true
+    sellable: true
+  GOAT_SPAWN_EGG:
+    basePrice: 350.0
+    minPrice: 250.0
+    maxPrice: 700.0
+    buyable: true
+    sellable: true
+  ZOMBIE_SPAWN_EGG:
+    basePrice: 300.0
+    minPrice: 200.0
+    maxPrice: 400.0
+    buyable: true
+    sellable: true
+  SHULKER_SPAWN_EGG:
+    basePrice: 2500.0
+    minPrice: 2000.0
+    maxPrice: 3000.0
+    buyable: true
+    sellable: true
+  STRIDER_SPAWN_EGG:
+    basePrice: 500.0
+    minPrice: 400.0
+    maxPrice: 650.0
+    buyable: true
+    sellable: true
+  VILLAGER_SPAWN_EGG:
+    basePrice: 180.0
+    minPrice: 150.0
+    maxPrice: 220.0
+    buyable: true
+    sellable: true
 
 # Villager-Handelseinstellungen
 trading:
