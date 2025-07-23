@@ -250,7 +250,11 @@ public class AtmTrader {
      */
     public void openDepositMenu(Player player) {
         AtmSession session = activeSessions.get(player);
-        if (session == null) return;
+        if (session == null) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cATM-Session ungültig. Bitte öffnen Sie das ATM erneut.");
+            return;
+        }
         
         Inventory depositInventory = Bukkit.createInventory(null, 27, "§2§lGeld einzahlen");
         
@@ -271,9 +275,16 @@ public class AtmTrader {
         // Zurück-Button
         depositInventory.setItem(18, createBackButton());
         
-        player.openInventory(depositInventory);
+        // Session-Update BEFORE opening inventory
         session.currentInventory = depositInventory;
         session.menuType = AtmSession.MenuType.DEPOSIT;
+        
+        // Session nochmals in Map speichern (sicherheitshalber)
+        activeSessions.put(player, session);
+        
+        player.openInventory(depositInventory);
+        
+        plugin.getLogger().info("Einzahl-Menü für " + player.getName() + " geöffnet. Session-Typ: " + session.menuType);
     }
     
     /**
@@ -283,7 +294,11 @@ public class AtmTrader {
      */
     public void openWithdrawMenu(Player player) {
         AtmSession session = activeSessions.get(player);
-        if (session == null) return;
+        if (session == null) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cATM-Session ungültig. Bitte öffnen Sie das ATM erneut.");
+            return;
+        }
         
         Inventory withdrawInventory = Bukkit.createInventory(null, 27, "§c§lGeld abheben");
         
@@ -304,9 +319,16 @@ public class AtmTrader {
         // Zurück-Button
         withdrawInventory.setItem(18, createBackButton());
         
-        player.openInventory(withdrawInventory);
+        // Session-Update BEFORE opening inventory
         session.currentInventory = withdrawInventory;
         session.menuType = AtmSession.MenuType.WITHDRAW;
+        
+        // Session nochmals in Map speichern (sicherheitshalber)
+        activeSessions.put(player, session);
+        
+        player.openInventory(withdrawInventory);
+        
+        plugin.getLogger().info("Abheb-Menü für " + player.getName() + " geöffnet. Session-Typ: " + session.menuType);
     }
     
     /**
@@ -317,17 +339,26 @@ public class AtmTrader {
      * @return ItemStack für den Button
      */
     private ItemStack createAmountButton(double amount, String displayName) {
-        ItemStack item = new ItemStack(Material.GOLD_NUGGET);
+        Material material = amount > 0 ? Material.GOLD_NUGGET : Material.GRAY_STAINED_GLASS_PANE;
+        ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(displayName);
         
-        List<String> lore = new ArrayList<>();
-        lore.add("§7Betrag: §e" + bankManager.formatAmount(amount));
-        lore.add("");
-        lore.add("§eLinksklick: Ausführen");
-        meta.setLore(lore);
+        if (amount > 0) {
+            meta.setDisplayName(displayName);
+            List<String> lore = new ArrayList<>();
+            lore.add("§7Betrag: §e" + bankManager.formatAmount(amount));
+            lore.add("");
+            lore.add("§eLinksklick: Ausführen");
+            meta.setLore(lore);
+        } else {
+            meta.setDisplayName("§8" + displayName.replace("§a", "").replace("§c", "") + " §7(Nicht verfügbar)");
+            List<String> lore = new ArrayList<>();
+            lore.add("§7Nicht genügend Guthaben");
+            lore.add("§7für diese Aktion verfügbar.");
+            meta.setLore(lore);
+        }
+        
         item.setItemMeta(meta);
-        
         return item;
     }
     
@@ -359,7 +390,18 @@ public class AtmTrader {
      */
     public void handleInventoryClick(Player player, int slot, ClickType clickType, ItemStack item) {
         AtmSession session = activeSessions.get(player);
-        if (session == null || item == null || !item.hasItemMeta()) return;
+        if (session == null) {
+            plugin.getLogger().warning("Keine aktive ATM-Session für Spieler " + player.getName());
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cATM-Session ungültig. Bitte öffnen Sie das ATM erneut.");
+            player.closeInventory();
+            return;
+        }
+        
+        // Null-Check für Item und ItemMeta
+        if (item == null || !item.hasItemMeta() || item.getItemMeta().getDisplayName() == null) {
+            return;
+        }
         
         String itemName = item.getItemMeta().getDisplayName();
         
@@ -367,6 +409,7 @@ public class AtmTrader {
             case MAIN -> handleMainMenuClick(player, session, slot, itemName);
             case DEPOSIT -> handleDepositMenuClick(player, session, slot, itemName);
             case WITHDRAW -> handleWithdrawMenuClick(player, session, slot, itemName);
+            default -> { /* Unbekannter Menü-Typ */ }
         }
     }
     
@@ -375,8 +418,12 @@ public class AtmTrader {
      */
     private void handleMainMenuClick(Player player, AtmSession session, int slot, String itemName) {
         switch (slot) {
-            case 14 -> openDepositMenu(player); // Einzahlen
-            case 16 -> openWithdrawMenu(player); // Abheben
+            case 14 -> { // Einzahlen
+                openDepositMenu(player);
+            }
+            case 16 -> { // Abheben
+                openWithdrawMenu(player);
+            }
             case 22 -> { // Schließen
                 player.closeInventory();
                 activeSessions.remove(player);
@@ -388,7 +435,7 @@ public class AtmTrader {
      * Behandelt Klicks im Einzahl-Menü
      */
     private void handleDepositMenuClick(Player player, AtmSession session, int slot, String itemName) {
-        if (slot == 18) { // Zurück
+        if (slot == 18 && itemName != null && itemName.contains("Zurück")) { // Zurück-Button
             openAtmMenu(player);
             return;
         }
@@ -403,7 +450,7 @@ public class AtmTrader {
      * Behandelt Klicks im Abheb-Menü
      */
     private void handleWithdrawMenuClick(Player player, AtmSession session, int slot, String itemName) {
-        if (slot == 18) { // Zurück
+        if (slot == 18 && itemName != null && itemName.contains("Zurück")) { // Zurück-Button
             openAtmMenu(player);
             return;
         }
@@ -418,32 +465,73 @@ public class AtmTrader {
      * Ermittelt den Betrag basierend auf dem Slot
      */
     private double getAmountFromSlot(int slot, AtmSession session, boolean isDeposit) {
-        return switch (slot) {
+        double amount = switch (slot) {
             case 10 -> 10.0;
             case 11 -> 100.0;
             case 12 -> 1000.0;
             case 13 -> isDeposit ? session.cashBalance : session.bankBalance;
             default -> 0.0;
         };
+        
+        // Zusätzliche Validierung für "Alles" einzahlen/abheben
+        if (slot == 13) {
+            if (isDeposit && session.cashBalance <= 0) {
+                return 0.0; // Kein Bargeld verfügbar
+            }
+            if (!isDeposit && session.bankBalance <= 0) {
+                return 0.0; // Kein Bank-Guthaben verfügbar
+            }
+        }
+        
+        return amount;
     }
     
     /**
      * Führt eine Einzahlung durch
      */
     private void performDeposit(Player player, double amount) {
-        if (amount <= 0) return;
+        if (amount <= 0) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cUngültiger Betrag für die Einzahlung!");
+            return;
+        }
         
+        AtmSession session = activeSessions.get(player);
+        if (session == null) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cATM-Session ungültig. Bitte öffnen Sie das ATM erneut.");
+            return;
+        }
+        
+        // Prüfe ob genügend Bargeld vorhanden ist
+        if (amount > session.cashBalance) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cNicht genügend Bargeld verfügbar! Sie haben nur " + 
+                             bankManager.formatAmount(session.cashBalance));
+            return;
+        }
+
         bankManager.depositToBank(player, amount).thenAccept(success -> {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (success) {
                     player.sendMessage(configManager.getMessage("prefix") + 
                                      "§a" + bankManager.formatAmount(amount) + " erfolgreich eingezahlt!");
+                    // Session aktualisieren
+                    session.cashBalance -= amount;
+                    session.bankBalance += amount;
                     openAtmMenu(player); // Menü aktualisieren
                 } else {
                     player.sendMessage(configManager.getMessage("prefix") + 
-                                     "§cNicht genügend Bargeld verfügbar!");
+                                     "§cFehler bei der Einzahlung! Bitte versuchen Sie es erneut.");
                 }
             });
+        }).exceptionally(throwable -> {
+            plugin.getLogger().severe("Unerwarteter Fehler bei ATM-Einzahlung: " + throwable.getMessage());
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                player.sendMessage(configManager.getMessage("prefix") + 
+                                 "§cEin unerwarteter Fehler ist aufgetreten. Bitte wenden Sie sich an einen Administrator.");
+            });
+            return null;
         });
     }
     
@@ -451,19 +539,48 @@ public class AtmTrader {
      * Führt eine Abhebung durch
      */
     private void performWithdraw(Player player, double amount) {
-        if (amount <= 0) return;
+        if (amount <= 0) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cUngültiger Betrag für die Abhebung!");
+            return;
+        }
         
+        AtmSession session = activeSessions.get(player);
+        if (session == null) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cATM-Session ungültig. Bitte öffnen Sie das ATM erneut.");
+            return;
+        }
+        
+        // Prüfe ob genügend Bank-Guthaben vorhanden ist
+        if (amount > session.bankBalance) {
+            player.sendMessage(configManager.getMessage("prefix") + 
+                             "§cNicht genügend Bank-Guthaben verfügbar! Sie haben nur " + 
+                             bankManager.formatAmount(session.bankBalance));
+            return;
+        }
+
         bankManager.withdrawFromBank(player, amount).thenAccept(success -> {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (success) {
                     player.sendMessage(configManager.getMessage("prefix") + 
                                      "§a" + bankManager.formatAmount(amount) + " erfolgreich abgehoben!");
+                    // Session aktualisieren
+                    session.bankBalance -= amount;
+                    session.cashBalance += amount;
                     openAtmMenu(player); // Menü aktualisieren
                 } else {
                     player.sendMessage(configManager.getMessage("prefix") + 
-                                     "§cNicht genügend Bank-Guthaben verfügbar!");
+                                     "§cFehler bei der Abhebung! Bitte versuchen Sie es erneut.");
                 }
             });
+        }).exceptionally(throwable -> {
+            plugin.getLogger().severe("Unerwarteter Fehler bei ATM-Abhebung: " + throwable.getMessage());
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                player.sendMessage(configManager.getMessage("prefix") + 
+                                 "§cEin unerwarteter Fehler ist aufgetreten. Bitte wenden Sie sich an einen Administrator.");
+            });
+            return null;
         });
     }
     

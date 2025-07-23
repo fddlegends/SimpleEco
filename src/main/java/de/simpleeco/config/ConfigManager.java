@@ -218,6 +218,13 @@ public class ConfigManager {
     }
     
     /**
+     * Lädt die Konfiguration neu
+     */
+    public void reload() {
+        loadConfig();
+    }
+    
+    /**
      * Datenklasse für Item-Preiskonfiguration
      */
     public static class ItemPriceConfig {

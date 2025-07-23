@@ -80,8 +80,17 @@ public class ShopVillagerManager {
         villager.setCustomName("§e§l" + villagerName);
         villager.setCustomNameVisible(true);
         
-        // Bewegung verhindern
-        villager.setAI(false);
+        // Bewegung konfigurieren - AI nur teilweise deaktivieren für Look-Funktionalität
+        boolean lookAtPlayers = configManager.getConfig().getBoolean("villagerBehavior.lookAtPlayers", true);
+        if (lookAtPlayers) {
+            // AI aktiviert lassen, aber Bewegung einschränken
+            villager.setAI(true);
+            villager.setCollidable(false); // Keine Kollision mit anderen Entities
+        } else {
+            // Vollständig deaktivieren
+            villager.setAI(false);
+        }
+        
         villager.setSilent(true);
         villager.setInvulnerable(true);
         villager.setRemoveWhenFarAway(false);

@@ -67,7 +67,12 @@ public class BankManager {
      * @return CompletableFuture das abgeschlossen wird wenn die Operation fertig ist
      */
     public CompletableFuture<Void> setCashBalance(Player player, double amount) {
-        return setCashBalance(player.getUniqueId(), amount);
+        return setCashBalance(player.getUniqueId(), amount).thenRun(() -> {
+            // Scoreboard benachrichtigen
+            if (plugin.getScoreboardManager() != null) {
+                plugin.getScoreboardManager().onBalanceChanged(player);
+            }
+        });
     }
     
     /**
@@ -89,7 +94,13 @@ public class BankManager {
      * @return CompletableFuture mit dem neuen Bargeld-Betrag
      */
     public CompletableFuture<Double> addCashBalance(Player player, double amount) {
-        return addCashBalance(player.getUniqueId(), amount);
+        return addCashBalance(player.getUniqueId(), amount).thenApply(newBalance -> {
+            // Scoreboard benachrichtigen
+            if (plugin.getScoreboardManager() != null) {
+                plugin.getScoreboardManager().onBalanceChanged(player);
+            }
+            return newBalance;
+        });
     }
     
     /**
@@ -183,7 +194,12 @@ public class BankManager {
      * @return CompletableFuture das abgeschlossen wird wenn die Operation fertig ist
      */
     public CompletableFuture<Void> setBankBalance(Player player, double amount) {
-        return setBankBalance(player.getUniqueId(), amount);
+        return setBankBalance(player.getUniqueId(), amount).thenRun(() -> {
+            // Scoreboard benachrichtigen
+            if (plugin.getScoreboardManager() != null) {
+                plugin.getScoreboardManager().onBankBalanceChanged(player);
+            }
+        });
     }
     
     /**
@@ -205,7 +221,13 @@ public class BankManager {
      * @return CompletableFuture mit dem neuen Bank-Guthaben
      */
     public CompletableFuture<Double> addBankBalance(Player player, double amount) {
-        return addBankBalance(player.getUniqueId(), amount);
+        return addBankBalance(player.getUniqueId(), amount).thenApply(newBalance -> {
+            // Scoreboard benachrichtigen
+            if (plugin.getScoreboardManager() != null) {
+                plugin.getScoreboardManager().onBankBalanceChanged(player);
+            }
+            return newBalance;
+        });
     }
     
     /**

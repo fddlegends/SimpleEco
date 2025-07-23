@@ -1,15 +1,16 @@
 package de.simpleeco;
 
 import de.simpleeco.commands.EcoCommand;
-import de.simpleeco.commands.SpawnCommand;
 import de.simpleeco.config.ConfigManager;
 import de.simpleeco.currency.BasicCurrency;
 import de.simpleeco.database.DatabaseManager;
 import de.simpleeco.listeners.PlayerJoinListener;
+import de.simpleeco.listeners.PlayerDeathListener;
 import de.simpleeco.listeners.VillagerInteractListener;
 import de.simpleeco.pricing.PriceManager;
 import de.simpleeco.scoreboard.ScoreboardManager;
 import de.simpleeco.tasks.PriceRegressionTask;
+import de.simpleeco.tasks.VillagerLookTask;
 import de.simpleeco.trading.CustomVillagerTrader;
 import de.simpleeco.villager.ShopVillagerManager;
 import de.simpleeco.bank.BankManager;
@@ -42,6 +43,7 @@ public class SimpleEcoPlugin extends JavaPlugin {
     private AtmTrader atmTrader;
     private ScoreboardManager scoreboardManager;
     private PriceRegressionTask regressionTask;
+    private VillagerLookTask villagerLookTask;
     
     @Override
     public void onEnable() {
@@ -90,7 +92,7 @@ public class SimpleEcoPlugin extends JavaPlugin {
             getLogger().info("ATM-Trading-System initialisiert");
             
             // 9. Scoreboard-Manager initialisieren
-            this.scoreboardManager = new ScoreboardManager(this, configManager, currency);
+            this.scoreboardManager = new ScoreboardManager(this, configManager, currency, bankManager);
             getLogger().info("Scoreboard-Manager initialisiert");
             
             // 10. Villager-Trading initialisieren
@@ -109,8 +111,16 @@ public class SimpleEcoPlugin extends JavaPlugin {
             this.regressionTask = PriceRegressionTask.start(this);
             getLogger().info("Preis-Regression-Task gestartet");
             
-            getLogger().info("SimpleEco Plugin erfolgreich aktiviert!");
-            
+            // 14. Villager-Look-Task starten (falls aktiviert)
+            if (configManager.getConfig().getBoolean("villagerBehavior.lookAtPlayers", true)) {
+                double lookDistance = configManager.getConfig().getDouble("villagerBehavior.lookDistance", 8.0);
+                long updateInterval = configManager.getConfig().getLong("villagerBehavior.lookUpdateInterval", 20);
+                
+                this.villagerLookTask = VillagerLookTask.start(this, shopVillagerManager, atmVillagerManager, 
+                                                              lookDistance, updateInterval);
+                getLogger().info("Villager-Look-Task gestartet");
+            }
+                        
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Fehler beim Starten des Plugins:", e);
             getServer().getPluginManager().disablePlugin(this);
@@ -126,6 +136,12 @@ public class SimpleEcoPlugin extends JavaPlugin {
             if (regressionTask != null && !regressionTask.isCancelled()) {
                 regressionTask.cancel();
                 getLogger().info("Preis-Regression-Task gestoppt");
+            }
+            
+            // Villager-Look-Task stoppen
+            if (villagerLookTask != null && !villagerLookTask.isCancelled()) {
+                villagerLookTask.cancel();
+                getLogger().info("Villager-Look-Task gestoppt");
             }
             
             // Scoreboard-Manager herunterfahren
@@ -150,15 +166,10 @@ public class SimpleEcoPlugin extends JavaPlugin {
      * Registriert alle Plugin-Commands
      */
     private void registerCommands() {
-        // Eco Command
-        EcoCommand ecoCommand = new EcoCommand(this, currency, configManager);
+        // SimpleEco Command (vereinigt alle Subcommands)
+        EcoCommand ecoCommand = new EcoCommand(this, currency, configManager, shopVillagerManager, atmVillagerManager);
         getCommand("eco").setExecutor(ecoCommand);
         getCommand("eco").setTabCompleter(ecoCommand);
-        
-        // Spawn Command
-        SpawnCommand spawnCommand = new SpawnCommand(this, configManager, shopVillagerManager, atmVillagerManager);
-        getCommand("spawn").setExecutor(spawnCommand);
-        getCommand("spawn").setTabCompleter(spawnCommand);
     }
     
     /**
@@ -167,6 +178,8 @@ public class SimpleEcoPlugin extends JavaPlugin {
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(
             new PlayerJoinListener(currency, configManager, scoreboardManager), this);
+        getServer().getPluginManager().registerEvents(
+            new PlayerDeathListener(this, configManager, bankManager, scoreboardManager), this);
         getServer().getPluginManager().registerEvents(
             new VillagerInteractListener(villagerTrader, shopVillagerManager, atmTrader, atmVillagerManager, scoreboardManager), this);
     }

@@ -173,12 +173,24 @@ public class VillagerInteractListener implements Listener {
             return;
         }
         
-                 // Prüfen ob es sich um ein ATM-Menü handelt
-         if (inventoryTitle.contains("Bank-Automat") || inventoryTitle.contains("Geld einzahlen") || inventoryTitle.contains("Geld abheben")) {
-             // ATM-Session schließen
-             atmTrader.removeSession(player);
-             return;
-         }
+        // Prüfen ob es sich um ein ATM-Menü handelt
+        if (inventoryTitle.contains("Bank-Automat") || inventoryTitle.contains("Geld einzahlen") || inventoryTitle.contains("Geld abheben")) {
+            // Verzögerte Session-Entfernung - nur wenn kein neues ATM-Menü innerhalb von 1 Tick geöffnet wird
+            org.bukkit.Bukkit.getScheduler().runTaskLater(scoreboardManager.getPlugin(), () -> {
+                // Prüfen ob der Spieler noch ein ATM-Menü offen hat
+                String currentTitle = player.getOpenInventory().getTitle();
+                if (!currentTitle.contains("Bank-Automat") && 
+                    !currentTitle.contains("Geld einzahlen") && 
+                    !currentTitle.contains("Geld abheben")) {
+                    // Spieler hat kein ATM-Menü mehr offen - Session entfernen
+                    atmTrader.removeSession(player);
+                    scoreboardManager.getPlugin().getLogger().info("ATM-Session für " + player.getName() + " entfernt (Menü geschlossen)");
+                } else {
+                    scoreboardManager.getPlugin().getLogger().info("ATM-Session für " + player.getName() + " beibehalten (Menü-Wechsel)");
+                }
+            }, 1L);
+            return;
+        }
     }
     
     /**

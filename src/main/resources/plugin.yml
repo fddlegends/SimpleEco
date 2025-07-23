@@ -1,20 +1,16 @@
 name: SimpleEco
 version: 1.0.0
 main: de.simpleeco.SimpleEcoPlugin
-api-version: 1.20
+api-version: "1.20"
 description: Dynamisches Wirtschaftssystem Plugin mit Villager-Trading
-author: SimpleEco Team
+author: Nichtmetall
 website: https://github.com/simpleeco
 
 commands:
   eco:
-    description: Hauptkommando für das Wirtschaftssystem
-    usage: /eco <balance|pay> [args...]
+    description: Hauptkommando für das SimpleEco Plugin
+    usage: /eco <balance|pay|spawn|reload> [args...]
     permission: simpleeco.use
-  spawn:
-    description: Spawnt spezielle Entities für das Plugin
-    usage: /spawn <villager>
-    permission: simpleeco.spawn
 
 permissions:
   simpleeco.use:
@@ -25,10 +21,22 @@ permissions:
     default: op
   simpleeco.balance.other:
     description: Erlaubt das Einsehen fremder Kontostände
+    default: true
+  simpleeco.balance.admin:
+    description: Erlaubt das Hinzufügen und Entfernen von Geld bei Spielern
     default: op
   simpleeco.spawn:
     description: Erlaubt das Spawnen von Shop-Entities
-    default: op
-  simpleeco.spawn.villager:
+    default: true
+  simpleeco.spawn.shop:
     description: Erlaubt das Spawnen von Shop-Villagern
+    default: true
+  simpleeco.spawn.atm:
+    description: Erlaubt das Spawnen von ATM-Villagern
+    default: true
+  simpleeco.spawn.free:
+    description: Erlaubt kostenloses Spawnen (ohne Kosten)
+    default: op
+  simpleeco.death.exempt:
+    description: Befreit von Geldverlust beim Tod
     default: op
