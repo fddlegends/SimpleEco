@@ -213,15 +213,15 @@ items:
     sellable: false
 #########################Mobs
   BEE_HIVE:
-    basePrice: 35.0
-    minPrice: 20.0
-    maxPrice: 60.0
+    basePrice: 350.0
+    minPrice: 200.0
+    maxPrice: 600.0
     buyable: true
     sellable: true
   BEE_NEST:
-    basePrice: 35.0
-    minPrice: 20.0
-    maxPrice: 60.0
+    basePrice: 350.0
+    minPrice: 200.0
+    maxPrice: 600.0
     buyable: true
     sellable: true
   HONEY_BLOCK:
@@ -344,6 +344,8 @@ items:
     maxPrice: 52.0
     buyable: true
     sellable: true
+    referenceAmount: 500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   GUNPOWDER:
     basePrice: 2.0
     minPrice: 1.0
@@ -386,6 +388,8 @@ items:
     maxPrice: 350.0
     buyable: true
     sellable: true
+    referenceAmount: 10  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.1      # Optional: Überschreibt globalen Wert
   ENDER_PEARL:
     basePrice: 2.0
     minPrice: 1.0
@@ -404,6 +408,8 @@ items:
     maxPrice: 2000.0
     buyable: true
     sellable: true
+    referenceAmount: 60  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   DRAGON_BREATH:
     basePrice: 200.0
     minPrice: 150.0
@@ -544,6 +550,24 @@ items:
     buyable: true
     sellable: true
   LILY_PAD:
+    basePrice: 10.0
+    minPrice: 3.0
+    maxPrice: 23.0
+    buyable: true
+    sellable: true
+  SEA_PICKLE:
+    basePrice: 10.0
+    minPrice: 3.0
+    maxPrice: 23.0
+    buyable: true
+    sellable: true
+  LILY_PAD:
+    basePrice: 10.0
+    minPrice: 3.0
+    maxPrice: 23.0
+    buyable: true
+    sellable: true
+  FIRE_CORAL_FAN:
     basePrice: 10.0
     minPrice: 3.0
     maxPrice: 23.0
@@ -707,36 +731,48 @@ items:
     maxPrice: 14.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   DIORITE:
     basePrice: 8.0
     minPrice: 4.0
     maxPrice: 14.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   GRANITE:
     basePrice: 8.0
     minPrice: 4.0
     maxPrice: 14.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   TUFF:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 18.0
     buyable: true
     sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   CALCITE:
     basePrice: 12.0
     minPrice: 6.0
     maxPrice: 20.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   BLACKSTONE:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 18.0
     buyable: true
     sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   POLISHED_BLACKSTONE:
     basePrice: 12.0
     minPrice: 6.0
@@ -755,6 +791,8 @@ items:
     maxPrice: 18.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   POINTED_DRIPSTONE:
     basePrice: 12.0
     minPrice: 6.0
@@ -767,42 +805,56 @@ items:
     maxPrice: 24.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   SAND:
     basePrice: 6.0
     minPrice: 3.0
     maxPrice: 10.0
     buyable: true
     sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   RED_SAND:
     basePrice: 7.0
     minPrice: 4.0
     maxPrice: 12.0
     buyable: true
     sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   SANDSTONE:
     basePrice: 4.0
     minPrice: 2.0
     maxPrice: 16.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   RED_SANDSTONE:
     basePrice: 4.0
     minPrice: 2.0
     maxPrice: 18.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   TERRACOTTA:
     basePrice: 4.0
     minPrice: 2.0
     maxPrice: 20.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   CLAY:
     basePrice: 4.0
     minPrice: 2.0
     maxPrice: 18.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   BRICK:
     basePrice: 16.0
     minPrice: 8.0
@@ -814,25 +866,33 @@ items:
     minPrice: 2.0
     maxPrice: 10.0
     buyable: true
-    sellable: true
+    sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   DIRT:
     basePrice: 4.0
     minPrice: 2.0
     maxPrice: 8.0
     buyable: true
     sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   COARSE_DIRT:
     basePrice: 5.0
     minPrice: 3.0
     maxPrice: 9.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   GRASS_BLOCK:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 5.0
     buyable: true
-    sellable: true
+    sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   SOUL_SAND:
     basePrice: 10.0
     minPrice: 5.0
@@ -851,24 +911,32 @@ items:
     maxPrice: 45.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   ICE:
     basePrice: 10.0
     minPrice: 2.0
     maxPrice: 22.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   PACKED_ICE:
     basePrice: 12.0
     minPrice: 6.0
     maxPrice: 20.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   SNOW_BLOCK:
     basePrice: 10.0
     minPrice: 2.0
     maxPrice: 18.0
     buyable: true
-    sellable: true
+    sellable: false
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   ##################RareBlöcke
   NETHER_BRICKS:
     basePrice: 14.0
@@ -876,12 +944,16 @@ items:
     maxPrice: 25.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   quartz_block:
     basePrice: 20.0
     minPrice: 12.0
     maxPrice: 35.0
     buyable: true
     sellable: true
+    referenceAmount: 1000  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   GLOWSTONE:
     basePrice: 18.0
     minPrice: 9.0
@@ -903,9 +975,11 @@ items:
   REDSTONE:
     basePrice: 8.0
     minPrice: 4.0
-    maxPrice: 14.0
+    maxPrice: 30.0
     buyable: true
     sellable: false
+    referenceAmount: 500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   REDSTONE_BLOCK:
     basePrice: 6.0
     minPrice: 4.0
@@ -918,18 +992,24 @@ items:
     maxPrice: 18.0
     buyable: true
     sellable: false
+    referenceAmount: 500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   IRON_BARS:
     basePrice: 8.0
     minPrice: 4.0
     maxPrice: 14.0
     buyable: true
     sellable: false
+    referenceAmount: 500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   LANTERN:
     basePrice: 10.0
     minPrice: 2.0
     maxPrice: 20.0
     buyable: true
     sellable: true
+    referenceAmount: 500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   SOUL_LANTERN:
     basePrice: 16.0
     minPrice: 9.0
@@ -941,6 +1021,14 @@ items:
     minPrice: 2.0
     maxPrice: 6.0
     buyable: true
+    sellable: false
+    referenceAmount: 1500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
+  CANDLE:
+    basePrice: 4.0
+    minPrice: 2.0
+    maxPrice: 6.0
+    buyable: true
     sellable: true
   SOUL_TORCH:
     basePrice: 6.0
@@ -948,6 +1036,8 @@ items:
     maxPrice: 10.0
     buyable: true
     sellable: true
+    referenceAmount: 500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   TNT:
     basePrice: 130.0
     minPrice: 120.0
@@ -960,6 +1050,8 @@ items:
     maxPrice: 14.0
     buyable: true
     sellable: true
+    referenceAmount: 500  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
   LEAD:
     basePrice: 10.0
     minPrice: 2.0
@@ -967,11 +1059,49 @@ items:
     buyable: true
     sellable: true
   NAME_TAG:
-    basePrice: 40.0
+    basePrice: 35.0
     minPrice: 25.0
     maxPrice: 70.0
     buyable: true
     sellable: true
+    referenceAmount: 40  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05      # Optional: Überschreibt globalen Wert
+  FLOWER_POT:
+    basePrice: 8.0
+    minPrice: 4.0
+    maxPrice: 14.0
+    buyable: true
+    sellable: false
+  MELON:
+    basePrice: 10.0
+    minPrice: 2.0
+    maxPrice: 28.0
+    buyable: true
+    sellable: false
+  PUMPKIN:
+    basePrice: 10.0
+    minPrice: 2.0
+    maxPrice: 28.0
+    buyable: true
+    sellable: false
+  CARVED_PUMPKIN:
+    basePrice: 6.0
+    minPrice: 2.0
+    maxPrice: 28.0
+    buyable: true
+    sellable: true
+  BOOKSHELF:
+    basePrice: 40.0
+    minPrice: 25.0
+    maxPrice: 70.0
+    buyable: true
+    sellable: false
+  ARMOR_STAND:
+    basePrice: 40.0
+    minPrice: 25.0
+    maxPrice: 70.0
+    buyable: true
+    sellable: false
 ########IDK
   ENDER_CHEST:
     basePrice: 40.0
@@ -979,6 +1109,8 @@ items:
     maxPrice: 70.0
     buyable: true
     sellable: false
+    referenceAmount: 10  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.1      # Optional: Überschreibt globalen Wert
   BARREL:
     basePrice: 40.0
     minPrice: 25.0
@@ -1057,6 +1189,18 @@ items:
     maxPrice: 70.0
     buyable: true
     sellable: false
+  SPONGE:
+    basePrice: 40.0
+    minPrice: 25.0
+    maxPrice: 70.0
+    buyable: true
+    sellable: false
+  COBWEB:
+    basePrice: 40.0
+    minPrice: 25.0
+    maxPrice: 70.0
+    buyable: true
+    sellable: false
 ####################ORES
   COAL_ORE:
     basePrice: 10.0
@@ -1118,6 +1262,8 @@ items:
     maxPrice: 800.0
     buyable: true
     sellable: true
+    referenceAmount: 35  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.1      # Optional: Überschreibt globalen Wert
   REDSTONE_ORE:
     basePrice: 18.0
     minPrice: 10.0
@@ -1143,6 +1289,12 @@ items:
     maxPrice: 55.0
     buyable: true
     sellable: true
+  REDSTONE_DUST:
+    basePrice: 20.0
+    minPrice: 12.0
+    maxPrice: 35.0
+    buyable: true
+    sellable: false
   GOLD_INGOT:
     basePrice: 50.0
     minPrice: 30.0
@@ -1185,12 +1337,17 @@ items:
     maxPrice: 800.0
     buyable: true
     sellable: true
-  REDSTONE_DUST:
+    referenceAmount: 35  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.1      # Optional: Überschreibt globalen Wert
+  GOLDEN_APPLE:
     basePrice: 20.0
-    minPrice: 12.0
-    maxPrice: 35.0
+    minPrice: 8.0
+    maxPrice: 45.0
     buyable: true
-    sellable: false
+    sellable: true
+    referenceAmount: 128  # Optional: Überschreibt globalen Wert
+    priceFactor: 0.05     # Optional: Überschreibt globalen Wert
+
   #########SpawnEggs
   ALLAY_SPAWN_EGG:
     basePrice: 1200.0
