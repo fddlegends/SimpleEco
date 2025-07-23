@@ -24,13 +24,13 @@ items:
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   OAK_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   OAK_SAPLING:
     basePrice: 15.0
     minPrice: 8.0
@@ -42,175 +42,175 @@ items:
     minPrice: 1.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   SPRUCE_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   SPRUCE_SAPLING:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   BIRCH_LOG:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   BIRCH_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   BIRCH_SAPLING:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   JUNGLE_LOG:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   JUNGLE_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   JUNGLE_SAPLING:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   ACACIA_LOG:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   ACACIA_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   ACACIA_SAPLING:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   DARK_OAK_LOG:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   DARK_OAK_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   DARK_OAK_SAPLING:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   MANGROVE_LOG:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   MANGROVE_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   MANGROVE_PROPAGULE:
     basePrice: 18.0
     minPrice: 10.0
     maxPrice: 35.0
     buyable: true
-    sellable: true
+    sellable: false
   CHERRY_LOG:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   CHERRY_LEAVES:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   CHERRY_SAPLING:
     basePrice: 15.0
     minPrice: 8.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   BAMBOO_BLOCK:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 35.0
     buyable: true
-    sellable: true
+    sellable: false
   BAMBOO:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 22.0
     buyable: true
-    sellable: true
+    sellable: false
   CRIMSON_STEM:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   CRIMSON_FUNGUS:
     basePrice: 12.0
     minPrice: 6.0
     maxPrice: 25.0
     buyable: true
-    sellable: true
+    sellable: false
   CRIMSON_ROOTS:
     basePrice: 16.0
     minPrice: 8.0
     maxPrice: 28.0
     buyable: true
-    sellable: true
+    sellable: false
   WARPED_STEM:
     basePrice: 10.0
     minPrice: 5.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   WARPED_FUNGUS:
     basePrice: 12.0
     minPrice: 6.0
     maxPrice: 25.0
     buyable: true
-    sellable: true
+    sellable: false
   WARPED_ROOTS:
     basePrice: 16.0
     minPrice: 8.0
     maxPrice: 28.0
     buyable: true
-    sellable: true
+    sellable: false
 #########################Mobs
   BEE_HIVE:
     basePrice: 35.0
@@ -247,7 +247,7 @@ items:
     minPrice: 1.0
     maxPrice: 40.0
     buyable: true
-    sellable: true
+    sellable: false
   FEATHER:
     basePrice: 2.0
     minPrice: 1.0
@@ -301,43 +301,43 @@ items:
     minPrice: 1.0
     maxPrice: 18.0
     buyable: true
-    sellable: true
+    sellable: false
   ARROW:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 20.0
     buyable: true
-    sellable: true
+    sellable: false
   BONE_MEAL:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 18.0
     buyable: true
-    sellable: true
+    sellable: false
   BONE_BLOCK:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 35.0
     buyable: true
-    sellable: true
+    sellable: false
   STRING:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 28.0
     buyable: true
-    sellable: true
+    sellable: false
   SPIDER_EYE:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 32.0
     buyable: true
-    sellable: true
+    sellable: false
   SLIME_BALL:
     basePrice: 2.0
     minPrice: 1.0
     maxPrice: 50.0
     buyable: true
-    sellable: true
+    sellable: false
   SLIME_BLOCK:
     basePrice: 32.0
     minPrice: 22.0
@@ -349,7 +349,7 @@ items:
     minPrice: 1.0
     maxPrice: 35.0
     buyable: true
-    sellable: true
+    sellable: false
   PHANTOM_MEMBRANE:
     basePrice: 80.0
     minPrice: 50.0
@@ -361,7 +361,7 @@ items:
     minPrice: 1.0
     maxPrice: 15.0
     buyable: true
-    sellable: true
+    sellable: false
   BLAZE_ROD:
     basePrice: 80.0
     minPrice: 50.0
@@ -544,8 +544,8 @@ items:
     buyable: true
     sellable: true
   LILY_PAD:
-    basePrice: 16.0
-    minPrice: 8.0
+    basePrice: 10.0
+    minPrice: 3.0
     maxPrice: 23.0
     buyable: true
     sellable: true
@@ -573,13 +573,13 @@ items:
     minPrice: 8.0
     maxPrice: 28.0
     buyable: true
-    sellable: true
+    sellable: false
   MOSS_CARPET:
     basePrice: 12.0
     minPrice: 6.0
     maxPrice: 22.0
     buyable: true
-    sellable: true
+    sellable: false
   CHORUS_FLOWER:
     basePrice: 20.0
     minPrice: 10.0
@@ -669,7 +669,7 @@ items:
     minPrice: 7.0
     maxPrice: 24.0
     buyable: true
-    sellable: true
+    sellable: false
   SHROOMLIGHT:
     basePrice: 22.0
     minPrice: 12.0
@@ -724,7 +724,7 @@ items:
     minPrice: 5.0
     maxPrice: 18.0
     buyable: true
-    sellable: true
+    sellable: false
   CALCITE:
     basePrice: 12.0
     minPrice: 6.0
@@ -736,7 +736,7 @@ items:
     minPrice: 5.0
     maxPrice: 18.0
     buyable: true
-    sellable: true
+    sellable: false
   POLISHED_BLACKSTONE:
     basePrice: 12.0
     minPrice: 6.0
@@ -772,34 +772,34 @@ items:
     minPrice: 3.0
     maxPrice: 10.0
     buyable: true
-    sellable: true
+    sellable: false
   RED_SAND:
     basePrice: 7.0
     minPrice: 4.0
     maxPrice: 12.0
     buyable: true
-    sellable: true
+    sellable: false
   SANDSTONE:
-    basePrice: 10.0
-    minPrice: 5.0
+    basePrice: 4.0
+    minPrice: 2.0
     maxPrice: 16.0
     buyable: true
     sellable: true
   RED_SANDSTONE:
-    basePrice: 11.0
-    minPrice: 6.0
+    basePrice: 4.0
+    minPrice: 2.0
     maxPrice: 18.0
     buyable: true
     sellable: true
   TERRACOTTA:
-    basePrice: 12.0
-    minPrice: 6.0
+    basePrice: 4.0
+    minPrice: 2.0
     maxPrice: 20.0
     buyable: true
     sellable: true
   CLAY:
-    basePrice: 10.0
-    minPrice: 5.0
+    basePrice: 4.0
+    minPrice: 2.0
     maxPrice: 18.0
     buyable: true
     sellable: true
@@ -810,8 +810,8 @@ items:
     buyable: true
     sellable: true
   GRAVEL:
-    basePrice: 6.0
-    minPrice: 3.0
+    basePrice: 4.0
+    minPrice: 2.0
     maxPrice: 10.0
     buyable: true
     sellable: true
@@ -820,7 +820,7 @@ items:
     minPrice: 2.0
     maxPrice: 8.0
     buyable: true
-    sellable: true
+    sellable: false
   COARSE_DIRT:
     basePrice: 5.0
     minPrice: 3.0
@@ -828,9 +828,9 @@ items:
     buyable: true
     sellable: true
   GRASS_BLOCK:
-    basePrice: 6.0
-    minPrice: 3.0
-    maxPrice: 10.0
+    basePrice: 2.0
+    minPrice: 1.0
+    maxPrice: 5.0
     buyable: true
     sellable: true
   SOUL_SAND:
@@ -846,14 +846,14 @@ items:
     buyable: true
     sellable: true
   BLUE_ICE:
-    basePrice: 30.0
-    minPrice: 18.0
+    basePrice: 10.0
+    minPrice: 2.0
     maxPrice: 45.0
     buyable: true
     sellable: true
   ICE:
-    basePrice: 12.0
-    minPrice: 6.0
+    basePrice: 10.0
+    minPrice: 2.0
     maxPrice: 22.0
     buyable: true
     sellable: true
@@ -865,7 +865,7 @@ items:
     sellable: true
   SNOW_BLOCK:
     basePrice: 10.0
-    minPrice: 5.0
+    minPrice: 2.0
     maxPrice: 18.0
     buyable: true
     sellable: true
@@ -876,7 +876,7 @@ items:
     maxPrice: 25.0
     buyable: true
     sellable: true
-  BLOCK_OF_QUARTZ:
+  quartz_block:
     basePrice: 20.0
     minPrice: 12.0
     maxPrice: 35.0
@@ -905,11 +905,11 @@ items:
     minPrice: 4.0
     maxPrice: 14.0
     buyable: true
-    sellable: true
+    sellable: false
   REDSTONE_BLOCK:
-    basePrice: 24.0
-    minPrice: 14.0
-    maxPrice: 40.0
+    basePrice: 6.0
+    minPrice: 4.0
+    maxPrice: 15.0
     buyable: true
     sellable: true
   CHAIN:
@@ -917,16 +917,16 @@ items:
     minPrice: 6.0
     maxPrice: 18.0
     buyable: true
-    sellable: true
+    sellable: false
   IRON_BARS:
     basePrice: 8.0
     minPrice: 4.0
     maxPrice: 14.0
     buyable: true
-    sellable: true
+    sellable: false
   LANTERN:
-    basePrice: 12.0
-    minPrice: 6.0
+    basePrice: 10.0
+    minPrice: 2.0
     maxPrice: 20.0
     buyable: true
     sellable: true
@@ -961,8 +961,8 @@ items:
     buyable: true
     sellable: true
   LEAD:
-    basePrice: 16.0
-    minPrice: 10.0
+    basePrice: 10.0
+    minPrice: 2.0
     maxPrice: 28.0
     buyable: true
     sellable: true
@@ -1136,7 +1136,7 @@ items:
     minPrice: 1.0
     maxPrice: 30.0
     buyable: true
-    sellable: true
+    sellable: false
   COPPER_INGOT:
     basePrice: 35.0
     minPrice: 20.0
@@ -1150,15 +1150,15 @@ items:
     buyable: true
     sellable: true
   DIAMOND:
-    basePrice: 190.0
-    minPrice: 180.0
-    maxPrice: 300.0
+    basePrice: 280.0
+    minPrice: 130.0
+    maxPrice: 600.0
     buyable: true
     sellable: true
   EMERALD:
-    basePrice: 21.0
-    minPrice: 11.0
-    maxPrice: 120.0
+    basePrice: 2.0
+    minPrice: 1.0
+    maxPrice: 20.0
     buyable: true
     sellable: true
   NETHER_QUARTZ:
@@ -1190,7 +1190,7 @@ items:
     minPrice: 12.0
     maxPrice: 35.0
     buyable: true
-    sellable: true
+    sellable: false
   #########SpawnEggs
   ALLAY_SPAWN_EGG:
     basePrice: 1200.0
