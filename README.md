@@ -15,13 +15,6 @@ Ein dynamisches Wirtschaftssystem Plugin für Minecraft Paper/Spigot.
 2. `SimpleEco.jar` in den `plugins/` Ordner kopieren
 3. Server neustarten
 
-## Commands
-
-| Command                      | Beschreibung        |
-| ---------------------------- | ------------------- |
-| `/eco balance [player]`      | Kontostand anzeigen |
-| `/eco pay <player> <amount>` | Geld überweisen     |
-
 ## Konfiguration
 
 Die `config.yml` wird automatisch erstellt und enthält alle verfügbaren Optionen mit Erklärungen.
